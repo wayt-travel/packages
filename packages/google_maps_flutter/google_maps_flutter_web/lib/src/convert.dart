@@ -64,8 +64,9 @@ gmaps.MapOptions _configurationAndStyleToGmapsOptions(
       configuration.zoomGesturesEnabled == false) {
     options.gestureHandling = 'none';
   } else {
-    options.gestureHandling = 'auto';
+    options.gestureHandling = 'cooperative';
   }
+  
 
   // These don't have any configuration entries, but they seem to be off in the
   // native maps.
