@@ -30,6 +30,7 @@ dependencies:
     git:
       url: https://github.com/wayt-travel/packages.git
       path: packages/google_maps_flutter/google_maps_flutter_web
+      ref: main
 
 dev_dependencies:
   flutter_test:

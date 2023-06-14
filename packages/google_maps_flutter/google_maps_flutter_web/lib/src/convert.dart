@@ -66,7 +66,6 @@ gmaps.MapOptions _configurationAndStyleToGmapsOptions(
   } else {
     options.gestureHandling = 'cooperative';
   }
-  
 
   // These don't have any configuration entries, but they seem to be off in the
   // native maps.
@@ -244,7 +243,10 @@ gmaps.Size? _gmSizeFromIconConfig(List<Object?> iconConfig, int sizeIndex) {
 }
 
 // Converts a [BitmapDescriptor] into a [gmaps.Icon] that can be used in Markers.
-gmaps.Icon? _gmIconFromBitmapDescriptor(BitmapDescriptor bitmapDescriptor) {
+gmaps.Icon? _gmIconFromBitmapDescriptor(
+  BitmapDescriptor bitmapDescriptor,
+  Offset anchor,
+) {
   final List<Object?> iconConfig = bitmapDescriptor.toJson() as List<Object?>;
 
   gmaps.Icon? icon;
@@ -277,6 +279,17 @@ gmaps.Icon? _gmIconFromBitmapDescriptor(BitmapDescriptor bitmapDescriptor) {
     }
   }
 
+  // See https://github.com/flutter/flutter/issues/80578#issuecomment-1324475184
+  if (icon != null &&
+      icon.size != null &&
+      icon.size?.width != null &&
+      icon.size?.height != null) {
+    icon.anchor = gmaps.Point(
+      anchor.dx * icon.size!.width!,
+      anchor.dy * icon.size!.height!,
+    );
+  }
+
   return icon;
 }
 
@@ -296,7 +309,7 @@ gmaps.MarkerOptions _markerOptionsFromMarker(
     ..visible = marker.visible
     ..opacity = marker.alpha
     ..draggable = marker.draggable
-    ..icon = _gmIconFromBitmapDescriptor(marker.icon);
+    ..icon = _gmIconFromBitmapDescriptor(marker.icon, marker.anchor);
   // TODO(ditman): Compute anchor properly, otherwise infowindows attach to the wrong spot.
   // Flat and Rotation are not supported directly on the web.
 }
